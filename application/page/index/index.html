@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>密码工具</title>
+    <link rel="stylesheet" href="./../../resource/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="./index.css" type="text/css" />
+  </head>
+  <body>
+    <div class="app">
+      <div class="topbar">
+        <div class="tool drag">
+          <div class="title">密码记录器</div>
+        </div>
+        <div class="action">
+          <i class="btn icon-s" title="重新设置密钥" id="init"><img src="./../../resource/icon/autorun.svg" /></i>
+          <i class="btn icon-s" title="关闭" id="close"><img src="./../../resource/icon/close.png" /></i>
+        </div>
+      </div>
+      <div class="page">
+        <div class="form">
+          <div class="item">
+            <label>名称</label>
+            <div>
+              <input id="name" type="text" />
+            </div>
+          </div>
+          <div class="item">
+            <label>账号</label>
+            <div>
+              <input id="account" type="text" />
+            </div>
+          </div>
+          <div class="item">
+            <label>密码</label>
+            <div>
+              <input id="pwd" type="text" />
+            </div>
+          </div>
+        </div>
+        <div class="submit">
+          <a id="submit" class="btn btn-success">保存</a>
+        </div>
+        <div class="pwds">
+          <div class="list" id="list">
+            <div class="item columns">
+              <div>名称</div>
+              <div>账号</div>
+              <div>密码</div>
+              <div>操作</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="./../../resource/js/common.js"></script>
+  <script src="./index.js"></script>
+</html>
