@@ -1,15 +1,15 @@
-let electron = require('electron');
+let page = require("./page");
 
-class dialog{
+class message{
     constructor(win){
         this.win = win;
         return this;
     }
     alert(title,message){
-        electron.dialog.showMessageBox(this.win,{
+        return electron.dialog.showMessageBox(this.win,{
             title:title,
             message:message
-        })
+        });
     }
     confirm(message,buttons){
         let _buttons=[];
@@ -28,7 +28,7 @@ class dialog{
             defaultId:defaultId,
             message:message,
             buttons:_buttons
-        }).then((index)=>{
+        }).then(function(index){
             if(callback[index.response]){
                 callback[index.response]();
             }
@@ -36,4 +36,4 @@ class dialog{
     }
 }
 
-module.exports=dialog;
+module.exports=message;

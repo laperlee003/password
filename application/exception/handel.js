@@ -3,7 +3,11 @@ class ExceptionHandel{
         if(typeof exception == "object"){
             switch(exception.code){
                 case "AlertException":
-                    window.dialog.alert(exception.title,exception.message);
+                    if(window.message){
+                        window.message.alert(exception.title,exception.message);
+                    } else {
+                        console.error("异常:", exception.title, exception.message);
+                    }
                     break;
             }
         }

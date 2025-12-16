@@ -9,47 +9,114 @@
   <body>
     <div class="app">
       <div class="topbar">
-        <div class="tool drag">
-          <div class="title">密码记录器</div>
+        <div class="title-area">
+          <span class="app-title">密码管理工具</span>
         </div>
         <div class="action">
-          <i class="btn icon-s" title="重新设置密钥" id="init"><img src="./../../resource/icon/autorun.svg" /></i>
-          <i class="btn icon-s" title="关闭" id="close"><img src="./../../resource/icon/close.png" /></i>
+          <i class="btn icon icon-s" title="显示快捷键帮助 (F1)" id="showHelp">❓</i>
+          <i class="btn icon icon-s" title="重新设置密钥" id="init">🔄</i>
+          <i class="btn icon icon-s" title="关闭" id="close">✕</i>
         </div>
       </div>
-      <div class="page">
-        <div class="form">
-          <div class="item">
-            <label>名称</label>
-            <div>
-              <input id="name" type="text" />
+      <!-- 搜索区域 -->
+      <div class="form search-form">
+        <div class="row">
+            <label>搜索</label>
+            <div class="search-container">
+              <input id="searchInput" type="text" placeholder="输入名称或账号进行搜索... (Ctrl+F)" />
+              <div class="btn btn-secondary" id="clearSearch">清空</div>
             </div>
-          </div>
-          <div class="item">
-            <label>账号</label>
-            <div>
-              <input id="account" type="text" />
-            </div>
-          </div>
-          <div class="item">
-            <label>密码</label>
-            <div>
-              <input id="pwd" type="text" />
-            </div>
-          </div>
         </div>
-        <div class="submit">
-          <a id="submit" class="btn btn-success">保存</a>
+      </div>
+
+      <!-- 操作区域 -->
+      <div class="action-bar">
+        <div class="btn btn-success" id="openAddWindow">
+          <span>+ 添加新密码</span>
+          <span class="shortcut-hint">(Ctrl+N)</span>
         </div>
+        <div class="btn btn-secondary" id="refreshList">刷新列表</div>
+      </div>
+        <!-- 密码列表区域 -->
         <div class="pwds">
+          <div class="list-header">
+            <div class="list-controls">
+              <span class="total-count">共 <span id="totalCount">0</span> 条记录</span>
+              <div class="view-controls">
+                <div class="btn btn-secondary" id="selectAll">全选</div>
+                <div class="btn btn-danger" id="deleteSelected" style="display:none;">删除选中</div>
+              </div>
+            </div>
+          </div>
           <div class="list" id="list">
-            <div class="item columns">
+            <div class="item columns header">
+              <div class="select-col">
+                <input type="checkbox" id="selectAllCheckbox" />
+              </div>
               <div>名称</div>
               <div>账号</div>
               <div>密码</div>
               <div>操作</div>
             </div>
+            <div class="empty-state" id="emptyState" style="display:none;">
+              <div class="empty-icon">🔐</div>
+              <div class="empty-text">暂无密码记录</div>
+              <div class="empty-hint">点击上方"添加新密码"开始使用</div>
+            </div>
           </div>
+        </div>
+    </div>
+
+
+
+    <!-- 帮助对话框 -->
+    <div class="modal" id="helpModal" style="display:none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>快捷键帮助</h3>
+          <div class="btn btn-secondary" id="closeHelp">×</div>
+        </div>
+        <div class="modal-body">
+          <div class="help-content">
+            <div class="help-section">
+              <h4>搜索功能</h4>
+              <div class="help-item">
+                <kbd>Ctrl + F</kbd>
+                <span>聚焦搜索框</span>
+              </div>
+              <div class="help-item">
+                <kbd>ESC</kbd>
+                <span>清空搜索（在搜索框中）</span>
+              </div>
+            </div>
+
+            <div class="help-section">
+              <h4>密码管理</h4>
+              <div class="help-item">
+                <kbd>Ctrl + N</kbd>
+                <span>展开添加密码表单并聚焦</span>
+              </div>
+              <div class="help-item">
+                <kbd>F1</kbd>
+                <span>显示此帮助对话框</span>
+              </div>
+            </div>
+
+            <div class="help-section">
+              <h4>功能说明</h4>
+              <ul class="help-list">
+                <li>支持按名称和账号搜索密码</li>
+                <li>内置密码生成器，支持高级自定义选项</li>
+                <li>实时密码强度检测</li>
+                <li>支持批量选择和删除</li>
+                <li>一键复制账号和密码</li>
+                <li>所有数据本地加密存储</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="btn btn-secondary" id="closeHelpBtn">关闭</div>
         </div>
       </div>
     </div>

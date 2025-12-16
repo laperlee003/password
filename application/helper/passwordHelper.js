@@ -87,9 +87,9 @@ function getByName(name){
     return pwds.get(name);
 }
 
-function savePwd(name,account,pwd){
+function savePwd(name,account,pwd,notes){
     let tools = new StringEncodeDecode(getUserSecret());
-    let context = {account,pwd}
+    let context = {account,pwd,notes: notes || ""}
     pwds.set(name,context);
     fileHelper.savePwd(tools.encode(name),tools.encode(JSON.stringify(context)));
 }

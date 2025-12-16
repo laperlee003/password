@@ -1,5 +1,5 @@
 let AlertException = require("./../../exception/AlertException");
-let  passwordHelper = require("./../../helper/passwordHelper");
+let passwordHelper = require("./../../helper/passwordHelper");
 
 module.exports = {
     load:(window,data)=>{
@@ -12,7 +12,8 @@ module.exports = {
             if(request.data.secret==""){
                 throw new AlertException("请填写密钥");
             }
-            passwordHelper.setSecret(request.data.secret,request.data.remember);
+            // 为了安全，始终不记住密钥
+            passwordHelper.setSecret(request.data.secret, false);
             window.go("index");
         }
     }

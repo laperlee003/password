@@ -46,6 +46,20 @@ module.exports = {
         },
         init:(window)=>{
             window.go("init");
+        },
+        openAddWindow:(window,request)=>{
+            // 打开添加密码窗口
+            window.dialog.load("add", {});
+            request.success();
+        },
+        refreshList:(window,request)=>{
+            // 刷新密码列表
+            passwordHelper.readPwd().then(pwds=>{
+                window.send("pwds",pwds);
+                request.success();
+            }).catch(e=>{
+                request.fail(e.message || e);
+            });
         }
     }
 }

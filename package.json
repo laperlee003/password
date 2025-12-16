@@ -6,62 +6,36 @@
   "author": "laperlee",
   "license": "MIT",
   "scripts": {
-    "start": "chcp 65001 && electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make"
+    "start": "chcp 65001 && electron .",
+    "make": "electron-builder --win --x64"
   },
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.0-beta.63",
-    "@electron-forge/maker-deb": "^6.0.0-beta.63",
-    "@electron-forge/maker-rpm": "^6.0.0-beta.63",
-    "@electron-forge/maker-squirrel": "^6.0.0-beta.63",
-    "@electron-forge/maker-zip": "^6.0.0-beta.63",
-    "electron": "^16.0.7"
+    "electron": "^25.3.1",
+    "electron-builder": "^24.6.3"
   },
   "dependencies": {
-    "body-parser": "^1.19.0",
-    "compressing": "^1.5.1",
-    "electron-squirrel-startup": "^1.0.0",
-    "express": "^4.17.1",
-    "express-async-errors": "^3.1.1",
-    "form-data": "^4.0.0",
-    "http": "0.0.1-security",
-    "http-proxy-middleware": "^2.0.1",
-    "log4js": "^6.4.1",
-    "md5-node": "^1.0.1",
-    "request": "^2.88.2",
-    "ws": "^8.4.2"
+    "compressing": "^1.10.0",
+    "electron-store": "^8.2.0",
+    "electron-updater": "^6.1.1",
+    "log4js": "^6.9.1"
   },
-  "config": {
-    "forge": {
-      "packagerConfig": {
-        "name": "password",
-        "packageManage": "npm",
-        "icon": "application/resource/favicon",
-        "asar": true
-      },
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "my_electron_app"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ]
+  "build": {
+    "productName": "password",
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": true
+    },
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "application/resource/favicon.ico"
     }
   }
 }

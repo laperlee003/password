@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>添加密码</title>
+    <link rel="stylesheet" href="./../../resource/style/common.css" type="text/css" />
+    <link rel="stylesheet" href="./index.css" type="text/css" />
+  </head>
+  <body>
+    <div class="app">
+      <div class="topbar">
+        <div class="title-area">
+          <span class="app-title">添加新密码</span>
+        </div>
+        <div class="action">
+          <i class="btn icon icon-s" title="关闭" id="close">✕</i>
+        </div>
+      </div>
+      
+      <!-- 添加密码表单 -->
+      <div class="form-container">
+        <div class="form add-form">
+          <div class="form-content">
+            <div class="row">
+                <label>名称</label>
+                <div><input id="addName" type="text" placeholder="请输入网站或应用名称" /></div>
+            </div>
+            <div class="row">
+                <label>账号</label>
+                <div><input id="addAccount" type="text" placeholder="请输入用户名或邮箱" /></div>
+            </div>
+            <div class="row">
+                <label>密码</label>
+                <div class="password-container">
+                  <input id="addPwd" type="password" placeholder="请输入密码" />
+                  <div class="btn btn-secondary" id="togglePwdVisibility">显示</div>
+                  <div class="btn btn-secondary" id="generatePwd">生成</div>
+                  <div class="btn btn-secondary" id="advancedGenerate">高级生成</div>
+                </div>
+            </div>
+            <div class="row">
+                <label></label>
+                <div class="password-strength">
+                  <div class="strength-bar">
+                    <div class="strength-fill" id="strengthFill"></div>
+                  </div>
+                  <span class="strength-text" id="strengthText">请输入密码</span>
+                </div>
+            </div>
+            <div class="row">
+                <label>备注</label>
+                <div><textarea id="addNotes" placeholder="可选：添加备注信息" rows="3"></textarea></div>
+            </div>
+            <div class="action">
+              <div class="btn btn-success" id="submitAdd">保存密码</div>
+              <div class="btn btn-secondary" id="clearForm">清空表单</div>
+              <div class="btn btn-secondary" id="cancel">取消</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 高级密码生成器模态框 -->
+    <div class="modal" id="passwordGeneratorModal" style="display:none;">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>高级密码生成器</h3>
+          <div class="btn btn-secondary" id="closeModal">×</div>
+        </div>
+        <div class="modal-body">
+          <div class="generator-options">
+            <div class="option-row">
+              <label>密码长度</label>
+              <div class="length-control">
+                <input type="range" id="lengthSlider" min="4" max="50" value="12" />
+                <span id="lengthValue">12</span>
+              </div>
+            </div>
+            <div class="option-row">
+              <label>包含字符类型</label>
+              <div class="checkbox-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="includeLowercase" checked />
+                  小写字母 (a-z)
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" id="includeUppercase" checked />
+                  大写字母 (A-Z)
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" id="includeNumbers" checked />
+                  数字 (0-9)
+                </label>
+                <label class="checkbox-label">
+                  <input type="checkbox" id="includeSymbols" />
+                  特殊符号 (!@#$%^&*)
+                </label>
+              </div>
+            </div>
+            <div class="option-row">
+              <label>排除相似字符</label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="excludeSimilar" />
+                排除 0,O,l,1,I 等相似字符
+              </label>
+            </div>
+          </div>
+          <div class="generated-password">
+            <label>生成的密码</label>
+            <div class="password-display">
+              <input type="text" id="generatedPassword" readonly />
+              <div class="btn btn-secondary" id="copyGenerated">复制</div>
+              <div class="btn btn-secondary" id="regenerate">重新生成</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="btn btn-success" id="useGenerated">使用此密码</div>
+          <div class="btn btn-secondary" id="cancelGenerate">取消</div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="./../../resource/js/common.js"></script>
+  <script src="./index.js"></script>
+</html>

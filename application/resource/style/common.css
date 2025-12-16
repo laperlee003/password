@@ -1,6 +1,11 @@
+
 *{
     box-sizing: border-box;
     -webkit-user-select:none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -ms-user-select: none;
+    user-select: none;
     font-family: "Microsoft YaHei"
 }
 html{
@@ -12,95 +17,216 @@ body{
     height: 100%;
     margin: 0;
     padding: 0;
-    background-color: #000;
     overflow: hidden;
 }
 img{
     width: 100%;
     height: 100%;
+    draggable: false;
 }
 
 .app{
-    background: url("./../bg.png");
-    background-size:cover;
-    display: grid;
     width: 100%;
     height: 100%;
-    grid-template-rows: 40px 1fr;
-}
-
-.app .topbar{
-    display: grid;
-    grid-template-columns: 1fr auto;
-    padding-left: 20px;
-    padding-right: 20px;
-}
-
-.app .topbar .tool{
+    background-color: #fafafa;
+    border-radius: 8px;
+    padding: 16px;
+    border: 1px solid #e0e0e0;
     display: flex;
-}
-.app .topbar .tool .logo{
-    margin-top: 13px;
-    height: 27px;
-    width: 85px;
-}
+    flex-direction: column;
+    color: #333;
+    .topbar{
+        position: relative;
+        top: 0px;
+        left: 0px;
+        width: 100%;
+        height: 40px;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        z-index: 1000;
 
-.app .topbar .tool .title{
-    color: #00E7FF;
-    padding-left: 16px;
-    font-size: 18px;
-    line-height: 40px;
-    font-weight: 600;
+        .action{
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 1001;
+
+        }
+
+        .title-area {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+            -webkit-app-region: drag;
+        }
+
+        .app-title {
+            color: #555;
+            font-size: 14px;
+            font-weight: 500;
+            margin-left: 12px;
+        }
+
+        .icon:not(:has(img)) {
+            background: #f5f5f5;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 14px;
+            font-weight: normal;
+            border: 1px solid #ddd;
+            width: 28px;
+            height: 28px;
+        }
+
+        .icon:not(:has(img)):hover {
+            background: #e8e8e8;
+            color: #333;
+            filter: none;
+            transform: scale(1.05);
+        }
+
+        .icon {
+            display: block;
+            width: 28px;
+            height: 28px;
+            opacity: 0.7;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 2px;
+            border-radius: 6px;
+        }
+
+        .icon:hover {
+            opacity: 1;
+            background: rgba(0, 0, 0, 0.05);
+        }
+    }
 }
-.app .topbar .tool .status{
-    margin-left: 16px;
-    width: 14px;
-    height: 14px;
-    margin-top: 13px;
+input[type=checkbox]{
+    box-sizing: border-box;
     display: block;
-    border-radius: 10px;
-    background-color: rgb(145, 145, 145);
+    position: relative;
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    &:after{
+        box-sizing: border-box;
+        position:absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        content: "";
+        background-color:#091B28;
+        display: block;
+        visibility: visible;
+        border-radius: 2px;
+        border:1px solid rgba(255, 255, 255, 0.2);
+    }
+    &:checked{
+        &:after{
+            box-sizing: border-box;
+            position:absolute;
+            padding: 2px;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            content: "\2713";
+            text-align: center;
+            font-size: 18px;
+            font-weight:bolder;
+            background-color:#00ffaf;
+            color: #fff;
+            display: inline-block;
+            visibility: visible;
+            border-radius: 2px;
+            line-height: 100%;
+            border:1px solid rgba(255, 255, 255, 0.2);
+        }
+    }
 }
-
-.app .topbar .tool .active{
-    background-color: rgb(60, 170, 190);
-    box-shadow:0 0 5px 5px rgb(93, 231, 255);
-}
-
-.app .topbar .action{
-    display: flex;
-    align-items: center;
-    width: auto !important;
-}
-.app .topbar .action i{
-    margin-left: 23px;
-    width: 18px;
-    height: 18px;
-}
-
 
 
 .btn{
-    display: block !important;
+    display: inline-block !important;
     box-sizing: border-box !important;
     cursor: pointer !important;
-    color: #fff !important;
+    color: #333 !important;
     text-align: center;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: 1px solid #ddd;
+    outline: none;
+    user-select: none;
+    background: #fff;
 }
 
-.drag{
-    -webkit-app-region: drag;
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-color: #bbb;
+}
+
+.btn:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .btn-success{
-    background-color: rgb(49, 159, 170) !important;
+    background: #4CAF50;
+    color: #fff !important;
+    border-color: #4CAF50;
 }
 
 .btn-success:hover{
-    background-color: rgb(60, 170, 190) !important;
+    background: #45a049;
+    border-color: #45a049;
 }
-.btn-success:active{
-    background-color: rgb(49, 159, 170) !important;
+
+.btn-secondary{
+    background: #f8f9fa;
+    color: #6c757d !important;
+    border-color: #dee2e6;
+}
+
+.btn-secondary:hover{
+    background: #e9ecef;
+    border-color: #adb5bd;
+    color: #495057 !important;
+}
+
+.btn-danger{
+    background: #f44336;
+    color: #fff !important;
+    border-color: #f44336;
+}
+
+.btn-danger:hover{
+    background: #da190b;
+    border-color: #da190b;
+}
+
+.btn-toggle{
+    background: #e9ecef;
+    color: #6c757d !important;
+    font-size: 11px;
+    padding: 4px 8px;
+    border-color: #ced4da;
+}
+
+.btn-toggle:hover{
+    background: #dee2e6;
+    border-color: #adb5bd;
 }
 
 .icon-s{
@@ -121,57 +247,111 @@ img{
     height: 72px;
 }
 
-.icon-m img{
-    width: 100%;
-    height: 100%;
-}
 
 .hidden{
     display: none !important;
 }
-input[type=checkbox]{
-    box-sizing: border-box;
-    display: block;
-    position: relative;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    border-width: 0;
-}
-input[type=checkbox]:after
-{
-    box-sizing: border-box;
-    position:absolute;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    content: "";
-    background-color:#091B28;
-    display: block;
-    visibility: visible;
-    border-radius: 2px;
-    border:1px solid rgba(255, 255, 255, 0.2);
+
+/* 表单样式增强 */
+.form {
+    margin-bottom: 16px;
 }
 
-input[type=checkbox]:checked:after
-{
-    box-sizing: border-box;
-    position:absolute;
-    padding: 2px;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    content: "\2713";
-    font-size: 6px;
-    font-weight:bolder;
-    background-color:#00E7FF;
-    color: #fff;
-    display: inline-block;
-    visibility: visible;
-    border-radius: 2px;
-    line-height: 100%;
-    border:1px solid rgba(255, 255, 255, 0.2);
+.form .row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 12px;
+}
+
+.form label {
+    color: #555;
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 60px;
+    text-align: right;
+}
+
+.form input[type="text"],
+.form input[type="password"] {
+    flex-grow: 1;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fff;
+    color: #333;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.form input[type="text"]:focus,
+.form input[type="password"]:focus {
+    border-color: #4CAF50;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+    outline: none;
+}
+
+.form input::placeholder {
+    color: #999;
+}
+
+.form .action {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+    margin-top: 16px;
+}
+
+/* 响应式设计 */
+@media (max-width: 900px) {
+    .app {
+        padding: 8px;
+    }
+
+    .form .row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form label {
+        text-align: left;
+        min-width: auto;
+        margin-bottom: 4px;
+    }
+
+    .pwds .list .item {
+        grid-template-columns: 40px 1fr 180px;
+        font-size: 13px;
+        height: 44px;
+        line-height: 44px;
+        padding: 0 6px;
+    }
+
+    .pwds .list .item > div:nth-child(3),
+    .pwds .list .item > div:nth-child(4) {
+        display: none;
+    }
+
+    .modal-content {
+        width: 95%;
+        max-width: 500px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .app {
+        padding: 16px;
+    }
+
+    .search-form, .add-form {
+        padding: 24px;
+        margin-bottom: 24px;
+    }
+
+    .pwds .list .item {
+        height: 52px;
+        line-height: 52px;
+        grid-template-columns: 60px 1fr 1fr 1fr 280px;
+    }
 }
