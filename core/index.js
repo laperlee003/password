@@ -31,8 +31,8 @@ class laperlee{
             applicationWindow.tray();
         }
 
-        let dialogOption = application.dialog;
-        dialogOption.option = application.option;
+        let dialogOption = Object.assign({}, application.dialog);
+        dialogOption.option = Object.assign({}, application.dialog.option);
         dialogOption.icon = application.icon;
         dialogOption.name = application.name;
         let dialogWindow = new dialog(dialogOption);

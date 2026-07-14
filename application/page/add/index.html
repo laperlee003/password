@@ -7,13 +7,13 @@
     <link rel="stylesheet" href="./index.css" type="text/css" />
   </head>
   <body>
-    <div class="app">
+    <div id="app" class="app" v-cloak>
       <div class="topbar">
         <div class="title-area">
           <span class="app-title">添加新密码</span>
         </div>
         <div class="action">
-          <i class="btn icon icon-s" title="关闭" id="close">✕</i>
+          <i class="btn icon icon-s" title="关闭" id="close" @click="closeDialogWindow">✕</i>
         </div>
       </div>
       
@@ -21,79 +21,80 @@
       <div class="form-container">
         <div class="form add-form">
           <div class="form-content">
-            <div class="row">
-                <label>名称</label>
-                <div><input id="addName" type="text" placeholder="请输入网站或应用名称" /></div>
-            </div>
-            <div class="row">
-                <label>账号</label>
-                <div><input id="addAccount" type="text" placeholder="请输入用户名或邮箱" /></div>
-            </div>
-            <div class="row">
-                <label>密码</label>
-                <div class="password-container">
-                  <input id="addPwd" type="password" placeholder="请输入密码" />
-                  <div class="btn btn-secondary" id="togglePwdVisibility">显示</div>
-                  <div class="btn btn-secondary" id="generatePwd">生成</div>
-                  <div class="btn btn-secondary" id="advancedGenerate">高级生成</div>
+            <div class="row split-row">
+                <div class="field">
+                  <label>名称</label>
+                  <input id="addName" ref="addName" v-model.trim="form.name" type="text" placeholder="请输入网站或应用名称" />
+                </div>
+                <div class="field">
+                  <label>账号</label>
+                  <input id="addAccount" v-model.trim="form.account" type="text" placeholder="请输入用户名或邮箱" />
                 </div>
             </div>
             <div class="row">
-                <label></label>
-                <div class="password-strength">
-                  <div class="strength-bar">
-                    <div class="strength-fill" id="strengthFill"></div>
+                <label>密码</label>
+                <div class="password-area">
+                  <div class="password-container">
+                    <div class="password-input-wrap">
+                      <input id="addPwd" v-model="form.pwd" :type="passwordInputType" placeholder="请输入密码" />
+                      <button type="button" class="password-toggle" id="togglePwdVisibility" @click="togglePasswordVisibility">{{ passwordToggleText }}</button>
+                    </div>
+                    <div class="btn btn-secondary" id="generatePwd" @click="fillSimplePassword">生成</div>
+                    <div class="btn btn-secondary" id="advancedGenerate" @click="showPasswordGenerator">高级生成</div>
                   </div>
-                  <span class="strength-text" id="strengthText">请输入密码</span>
+                  <div class="password-strength compact">
+                    <div class="strength-bar">
+                      <div id="strengthFill" :class="['strength-fill', passwordStrength.level]"></div>
+                    </div>
+                    <span class="strength-text" id="strengthText">{{ passwordStrength.text }}</span>
+                  </div>
                 </div>
             </div>
             <div class="row">
                 <label>备注</label>
-                <div><textarea id="addNotes" placeholder="可选：添加备注信息" rows="3"></textarea></div>
+                <div><textarea id="addNotes" v-model.trim="form.notes" placeholder="可选：添加备注信息" rows="3"></textarea></div>
             </div>
             <div class="action">
-              <div class="btn btn-success" id="submitAdd">保存密码</div>
-              <div class="btn btn-secondary" id="clearForm">清空表单</div>
-              <div class="btn btn-secondary" id="cancel">取消</div>
+              <div class="btn btn-success" id="submitAdd" :class="{ disable: saving }" @click="save">{{ saving ? '保存中...' : '保存密码' }}</div>
+              <div class="btn btn-secondary" id="cancel" @click="closeDialogWindow">取消</div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     
     <!-- 高级密码生成器模态框 -->
-    <div class="modal" id="passwordGeneratorModal" style="display:none;">
+    <div class="modal" id="passwordGeneratorModal" v-show="generatorVisible" @click.self="hidePasswordGenerator">
       <div class="modal-content">
         <div class="modal-header">
           <h3>高级密码生成器</h3>
-          <div class="btn btn-secondary" id="closeModal">×</div>
+          <div class="btn btn-secondary" id="closeModal" @click="hidePasswordGenerator">×</div>
         </div>
         <div class="modal-body">
           <div class="generator-options">
             <div class="option-row">
               <label>密码长度</label>
               <div class="length-control">
-                <input type="range" id="lengthSlider" min="4" max="50" value="12" />
-                <span id="lengthValue">12</span>
+                <input type="range" id="lengthSlider" min="4" max="50" v-model.number="generator.length" @input="generateModalPassword" />
+                <span id="lengthValue">{{ generator.length }}</span>
               </div>
             </div>
             <div class="option-row">
               <label>包含字符类型</label>
               <div class="checkbox-group">
                 <label class="checkbox-label">
-                  <input type="checkbox" id="includeLowercase" checked />
+                  <input type="checkbox" id="includeLowercase" v-model="generator.includeLowercase" @change="generateModalPassword" />
                   小写字母 (a-z)
                 </label>
                 <label class="checkbox-label">
-                  <input type="checkbox" id="includeUppercase" checked />
+                  <input type="checkbox" id="includeUppercase" v-model="generator.includeUppercase" @change="generateModalPassword" />
                   大写字母 (A-Z)
                 </label>
                 <label class="checkbox-label">
-                  <input type="checkbox" id="includeNumbers" checked />
+                  <input type="checkbox" id="includeNumbers" v-model="generator.includeNumbers" @change="generateModalPassword" />
                   数字 (0-9)
                 </label>
                 <label class="checkbox-label">
-                  <input type="checkbox" id="includeSymbols" />
+                  <input type="checkbox" id="includeSymbols" v-model="generator.includeSymbols" @change="generateModalPassword" />
                   特殊符号 (!@#$%^&*)
                 </label>
               </div>
@@ -101,7 +102,7 @@
             <div class="option-row">
               <label>排除相似字符</label>
               <label class="checkbox-label">
-                <input type="checkbox" id="excludeSimilar" />
+                <input type="checkbox" id="excludeSimilar" v-model="generator.excludeSimilar" @change="generateModalPassword" />
                 排除 0,O,l,1,I 等相似字符
               </label>
             </div>
@@ -109,17 +110,24 @@
           <div class="generated-password">
             <label>生成的密码</label>
             <div class="password-display">
-              <input type="text" id="generatedPassword" readonly />
-              <div class="btn btn-secondary" id="copyGenerated">复制</div>
-              <div class="btn btn-secondary" id="regenerate">重新生成</div>
+              <input type="text" id="generatedPassword" :value="generatedPassword" readonly />
+              <div class="btn btn-secondary" id="copyGenerated" @click="copyGeneratedPassword">复制</div>
+              <div class="btn btn-secondary" id="regenerate" @click="generateModalPassword">重新生成</div>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <div class="btn btn-success" id="useGenerated">使用此密码</div>
-          <div class="btn btn-secondary" id="cancelGenerate">取消</div>
+          <div class="btn btn-success" id="useGenerated" @click="useGeneratedPassword">使用此密码</div>
+          <div class="btn btn-secondary" id="cancelGenerate" @click="hidePasswordGenerator">取消</div>
         </div>
       </div>
+    </div>
+
+    <div class="notifications">
+      <div v-for="notice in notifications" :key="notice.id" :class="['notification', 'notification-' + notice.type]">
+        {{ notice.message }}
+      </div>
+    </div>
     </div>
   </body>
   <script src="./../../resource/js/common.js"></script>

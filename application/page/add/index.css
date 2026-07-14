@@ -1,7 +1,7 @@
 /* 添加密码窗口样式 */
 .form-container {
     flex-grow: 1;
-    padding: 20px;
+    padding: 12px;
     overflow-y: auto;
 }
 
@@ -15,8 +15,43 @@
 }
 
 .form-content {
-    padding: 24px;
+    padding: 14px 16px;
     background: #fff;
+}
+
+.add-form .row {
+    margin-bottom: 9px;
+    gap: 10px;
+}
+
+.add-form .action {
+    margin-top: 10px;
+}
+
+.add-form .btn {
+    padding: 7px 11px;
+    font-size: 12px;
+}
+
+.split-row {
+    align-items: flex-start !important;
+}
+
+.split-row .field {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.split-row .field label {
+    flex: 0 0 42px;
+    min-width: 42px;
+}
+
+.split-row .field input {
+    min-width: 0;
 }
 
 .password-container {
@@ -26,8 +61,43 @@
     flex-grow: 1;
 }
 
-.password-container input {
+.password-area {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
     flex-grow: 1;
+    min-width: 0;
+}
+
+.password-input-wrap {
+    position: relative;
+    flex: 0 1 210px;
+    max-width: 220px;
+    min-width: 160px;
+}
+
+.password-input-wrap input {
+    width: 100%;
+    padding-right: 46px !important;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    color: #4CAF50;
+    font-size: 12px;
+    line-height: 1;
+    padding: 4px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.password-toggle:hover {
+    background: rgba(76, 175, 80, 0.1);
 }
 
 /* 密码强度指示器 */
@@ -38,9 +108,14 @@
     flex-grow: 1;
 }
 
+.password-strength.compact {
+    gap: 8px;
+    min-height: 16px;
+}
+
 .strength-bar {
     flex-grow: 1;
-    height: 6px;
+    height: 4px;
     background-color: #f0f0f0;
     border-radius: 3px;
     overflow: hidden;
@@ -76,7 +151,11 @@
 .strength-text {
     font-size: 12px;
     color: #666;
-    min-width: 80px;
+    min-width: 120px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* 备注文本框 */
@@ -90,12 +169,13 @@ textarea {
     background-color: #f8f9fa;
     border-radius: 6px;
     border: 1px solid #dee2e6;
-    padding: 10px 12px;
+    padding: 8px 10px;
     color: #333;
     font-size: 14px;
     font-family: "Microsoft YaHei";
     resize: vertical;
-    min-height: 60px;
+    min-height: 48px;
+    max-height: 72px;
     transition: all 0.2s ease;
 }
 
@@ -138,7 +218,7 @@ textarea::placeholder {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 20px;
+    padding: 12px 16px;
     border-bottom: 1px solid #e9ecef;
     background-color: #f8f9fa;
 }
@@ -150,14 +230,14 @@ textarea::placeholder {
 }
 
 .modal-body {
-    padding: 20px;
+    padding: 16px;
 }
 
 .modal-footer {
     display: flex;
     justify-content: flex-end;
     gap: 8px;
-    padding: 16px 20px;
+    padding: 12px 16px;
     border-top: 1px solid #e9ecef;
     background-color: #f8f9fa;
 }
@@ -258,4 +338,37 @@ textarea::placeholder {
     padding: 8px 12px;
     border-radius: 4px;
     font-family: 'Courier New', monospace;
+}
+
+@media (max-width: 760px) {
+    .split-row {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .split-row .field {
+        width: 100%;
+        align-items: stretch;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .split-row .field label {
+        flex: 0 0 auto;
+        min-width: auto;
+        text-align: left;
+    }
+
+    .password-container {
+        flex-wrap: wrap;
+    }
+
+    .password-input-wrap {
+        flex-basis: 100%;
+        max-width: none;
+    }
+
+    .strength-text {
+        min-width: 100px;
+    }
 }

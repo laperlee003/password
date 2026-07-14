@@ -37,8 +37,8 @@ module.exports = {
             // 保存成功后通知主窗口刷新
             setTimeout(() => {
                 try {
-                    if(window.parent && typeof window.parent.send === 'function'){
-                        window.parent.send("refresh-list");
+                    if(window.parent && window.parent.webContents){
+                        window.parent.webContents.send("refresh-list");
                     }
                 } catch(e) {
                     console.log("通知主窗口刷新失败:", e.message);

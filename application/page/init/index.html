@@ -7,13 +7,13 @@
     <link rel="stylesheet" href="./index.css" type="text/css" />
   </head>
   <body>
-    <div class="app">
+    <div id="app" class="app" v-cloak>
       <div class="topbar">
         <div class="title-area">
           <span class="app-title">密码管理工具</span>
         </div>
         <div class="action">
-          <i class="btn icon icon-s" title="关闭" id="close">✕</i>
+          <i class="btn icon icon-s" title="关闭" id="close" @click="closeWindow">✕</i>
         </div>
       </div>
 
@@ -29,11 +29,12 @@
             <div class="form-group">
               <label for="secret" class="form-label">主密钥</label>
               <div class="input-container">
-                <input id="secret" type="password" class="form-input" placeholder="请输入您的主密钥" />
-                <button type="button" class="toggle-password" id="toggleSecret" title="显示/隐藏密码">
-                  <span class="eye-icon">👁</span>
+                <input id="secret" ref="secretInput" v-model.trim="secret" :type="secretInputType" class="form-input" :class="{ error: errorMessage }" placeholder="请输入您的主密钥" @keydown.enter="submit" />
+                <button type="button" class="toggle-password" id="toggleSecret" title="显示/隐藏密码" @click="toggleSecretVisibility">
+                  <span class="eye-icon">{{ eyeIcon }}</span>
                 </button>
               </div>
+              <div class="error-message" v-if="errorMessage">{{ errorMessage }}</div>
               <div class="input-hint">主密钥用于加密和解密您的所有密码数据</div>
             </div>
 
@@ -41,9 +42,9 @@
           </div>
 
           <div class="card-footer">
-            <button class="btn btn-primary btn-large" id="submit">
-              <span class="btn-text">解锁密码管理器</span>
-              <span class="btn-icon">→</span>
+            <button class="btn btn-primary btn-large" id="submit" :disabled="submitting" @click="submit">
+              <span class="btn-text">{{ submitText }}</span>
+              <span class="btn-icon">{{ submitIcon }}</span>
             </button>
           </div>
         </div>

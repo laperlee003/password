@@ -52,6 +52,7 @@ class StringEncodeDecode{
 
 let fileHelper = require("./fileHelper");
 let os = require("os");
+let path = require("path");
 
 let pwds = new Map;
 function readPwd(){
@@ -59,23 +60,73 @@ function readPwd(){
     return new Promise((resolve,reject)=>{
         if(!userSecret){
             reject("密钥获取失败");
+            return;
         }
         let tools = new StringEncodeDecode(userSecret);
         fileHelper.scanPwd().then(files=>{
+            let nextPwds = new Map;
+            let skippedFiles = [];
+            let invalidFiles = [];
+
             for(let file of files){
-                let name = fileHelper.getPwdFileName(file);
-                name = tools.decode(name);
-                if(!name){
-                    continue;
+                try {
+                    let name = fileHelper.getPwdFileName(file);
+                    name = tools.decode(name);
+                    if(!name){
+                        skippedFiles.push(file);
+                        continue;
+                    }
+                    let context = fileHelper.readPwd(file);
+                    context = tools.decode(context);
+                    if(!context){
+                        skippedFiles.push(file);
+                        continue;
+                    }
+                    try {
+                        context=JSON.parse(context);
+                    } catch (error) {
+                        invalidFiles.push({
+                            file,
+                            error
+                        });
+                        continue;
+                    }
+                    if(!context || typeof context !== "object"){
+                        invalidFiles.push({
+                            file,
+                            error:"密码记录格式错误"
+                        });
+                        continue;
+                    }
+                    console.log("[password parsed]", {
+                        name,
+                        account: maskValue(context.account),
+                        pwdLength: context.pwd ? String(context.pwd).length : 0,
+                        notes: context.notes || ""
+                    });
+                    nextPwds.set(name,context);
+                } catch (error) {
+                    invalidFiles.push({
+                        file,
+                        error
+                    });
                 }
-                let context = fileHelper.readPwd(file);
-                context = tools.decode(context);
-                if(!context){
-                    continue;
-                }
-                context=JSON.parse(context);
-                pwds.set(name,context);
             }
+
+            if(files.length > 0 && nextPwds.size === 0 && (skippedFiles.length > 0 || invalidFiles.length > 0)){
+                reject("主密钥不正确或密码数据损坏，请确认密钥后重试");
+                return;
+            }
+
+            if(invalidFiles.length > 0){
+                console.warn(`跳过 ${invalidFiles.length} 条无法解析的密码记录`);
+                invalidFiles.forEach(item=>{
+                    let msg = item.error && item.error.message ? item.error.message : item.error;
+                    console.warn(path.basename(item.file), msg);
+                });
+            }
+
+            pwds = nextPwds;
             resolve(pwds);
         }).catch(e=>{
             reject(e);
@@ -85,6 +136,17 @@ function readPwd(){
 
 function getByName(name){
     return pwds.get(name);
+}
+
+function maskValue(value){
+    if(!value){
+        return "";
+    }
+    value = String(value);
+    if(value.length <= 2){
+        return "***";
+    }
+    return value.slice(0,1)+"***"+value.slice(-1);
 }
 
 function savePwd(name,account,pwd,notes){

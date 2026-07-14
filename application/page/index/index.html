@@ -7,74 +7,82 @@
     <link rel="stylesheet" href="./index.css" type="text/css" />
   </head>
   <body>
-    <div class="app">
+    <div id="app" class="app" v-cloak>
       <div class="topbar">
         <div class="title-area">
           <span class="app-title">密码管理工具</span>
         </div>
         <div class="action">
-          <i class="btn icon icon-s" title="显示快捷键帮助 (F1)" id="showHelp">❓</i>
-          <i class="btn icon icon-s" title="重新设置密钥" id="init">🔄</i>
-          <i class="btn icon icon-s" title="关闭" id="close">✕</i>
+          <i class="btn icon icon-s" title="显示快捷键帮助 (F1)" id="showHelp" @click="showHelp">❓</i>
+          <i class="btn icon icon-s" title="重新设置密钥" id="init" @click="resetSecret">🔄</i>
+          <i class="btn icon icon-s" title="关闭" id="close" @click="closeWindow">✕</i>
         </div>
       </div>
-      <!-- 搜索区域 -->
-      <div class="form search-form">
-        <div class="row">
-            <label>搜索</label>
-            <div class="search-container">
-              <input id="searchInput" type="text" placeholder="输入名称或账号进行搜索... (Ctrl+F)" />
-              <div class="btn btn-secondary" id="clearSearch">清空</div>
-            </div>
+      <!-- 工具栏 -->
+      <div class="toolbar">
+        <div class="search-container">
+          <span class="search-label">搜索</span>
+          <input id="searchInput" ref="searchInput" v-model.trim="searchTerm" type="text" placeholder="输入名称、账号或备注... (Ctrl+F)" />
+          <div class="btn btn-secondary" id="clearSearch" @click="clearSearch">清空</div>
         </div>
-      </div>
-
-      <!-- 操作区域 -->
-      <div class="action-bar">
-        <div class="btn btn-success" id="openAddWindow">
-          <span>+ 添加新密码</span>
-          <span class="shortcut-hint">(Ctrl+N)</span>
+        <div class="toolbar-actions">
+          <div class="btn btn-success" id="openAddWindow" @click="openAddWindow">
+            <span>+ 添加新密码</span>
+            <span class="shortcut-hint">(Ctrl+N)</span>
+          </div>
+          <div class="btn btn-secondary" id="refreshList" @click="refreshList">刷新列表</div>
         </div>
-        <div class="btn btn-secondary" id="refreshList">刷新列表</div>
       </div>
         <!-- 密码列表区域 -->
         <div class="pwds">
           <div class="list-header">
             <div class="list-controls">
-              <span class="total-count">共 <span id="totalCount">0</span> 条记录</span>
+              <span class="total-count">共 <span id="totalCount">{{ filteredPasswords.length }}</span> 条记录</span>
               <div class="view-controls">
-                <div class="btn btn-secondary" id="selectAll">全选</div>
-                <div class="btn btn-danger" id="deleteSelected" style="display:none;">删除选中</div>
+                <div class="btn btn-secondary" id="selectAll" @click="toggleSelectAllButton">{{ isAllSelected ? '取消全选' : '全选' }}</div>
+                <div class="btn btn-danger" id="deleteSelected" v-show="selectedNames.length > 0" @click="batchDelete">删除选中({{ selectedNames.length }})</div>
               </div>
             </div>
           </div>
           <div class="list" id="list">
             <div class="item columns header">
               <div class="select-col">
-                <input type="checkbox" id="selectAllCheckbox" />
+                <input type="checkbox" id="selectAllCheckbox" ref="selectAllCheckbox" :checked="isAllSelected" @change="toggleSelectAll($event.target.checked)" />
               </div>
               <div>名称</div>
               <div>账号</div>
               <div>密码</div>
               <div>操作</div>
             </div>
-            <div class="empty-state" id="emptyState" style="display:none;">
+            <div class="item" v-for="item in filteredPasswords" :key="item.name" :data-name="item.name" :class="{ selected: isSelected(item.name) }">
+              <div class="select-col">
+                <input type="checkbox" :checked="isSelected(item.name)" @change="toggleSelected(item.name, $event.target.checked)" />
+              </div>
+              <div class="name-cell" @mouseenter="showNoteTooltip($event, item)" @mousemove="moveNoteTooltip($event)" @mouseleave="hideNoteTooltip">{{ item.name }}</div>
+              <div :title="item.account">{{ hideString(item.account) }}</div>
+              <div>***</div>
+              <div class="action">
+                <div v-if="item.account" class="btn btn-secondary" @click="copyText(item.account, '账号复制成功')">复制账号</div>
+                <div class="btn btn-secondary" @click="copyText(item.pwd, '密码复制成功')">复制密码</div>
+                <div class="btn btn-danger" @click="deletePassword(item.name)">删除</div>
+              </div>
+            </div>
+            <div class="empty-state" id="emptyState" v-show="filteredPasswords.length === 0">
               <div class="empty-icon">🔐</div>
-              <div class="empty-text">暂无密码记录</div>
-              <div class="empty-hint">点击上方"添加新密码"开始使用</div>
+              <div class="empty-text">{{ searchTerm ? '没有匹配的密码记录' : '暂无密码记录' }}</div>
+              <div class="empty-hint">{{ searchTerm ? '请尝试调整搜索条件' : '点击上方"添加新密码"开始使用' }}</div>
             </div>
           </div>
         </div>
-    </div>
 
 
 
     <!-- 帮助对话框 -->
-    <div class="modal" id="helpModal" style="display:none;">
+    <div class="modal" id="helpModal" v-show="helpVisible" @click.self="hideHelp">
       <div class="modal-content">
         <div class="modal-header">
           <h3>快捷键帮助</h3>
-          <div class="btn btn-secondary" id="closeHelp">×</div>
+          <div class="btn btn-secondary" id="closeHelp" @click="hideHelp">×</div>
         </div>
         <div class="modal-body">
           <div class="help-content">
@@ -116,9 +124,37 @@
           </div>
         </div>
         <div class="modal-footer">
-          <div class="btn btn-secondary" id="closeHelpBtn">关闭</div>
+          <div class="btn btn-secondary" id="closeHelpBtn" @click="hideHelp">关闭</div>
         </div>
       </div>
+    </div>
+
+    <div class="confirm-dialog" v-if="confirmDialog.visible" @click.self="resolveConfirm(false)">
+      <div class="confirm-content">
+        <div class="confirm-header">
+          <h3>{{ confirmDialog.title }}</h3>
+        </div>
+        <div class="confirm-body">
+          <p>{{ confirmDialog.message }}</p>
+        </div>
+        <div class="confirm-footer">
+          <div class="btn btn-secondary" @click="resolveConfirm(false)">取消</div>
+          <div class="btn btn-danger" @click="resolveConfirm(true)">确认</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notifications">
+      <div v-for="notice in notifications" :key="notice.id" :class="['notification', 'notification-' + notice.type]">
+        {{ notice.message }}
+      </div>
+    </div>
+
+    <div class="note-tooltip" v-if="noteTooltip.visible" :style="{ left: noteTooltip.x + 'px', top: noteTooltip.y + 'px' }">
+      {{ noteTooltip.text }}
+    </div>
+
+    <div class="dialog-mask" v-show="dialogMaskVisible"></div>
     </div>
   </body>
   <script src="./../../resource/js/common.js"></script>

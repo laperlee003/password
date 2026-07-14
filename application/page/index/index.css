@@ -1,34 +1,27 @@
 
-/* 搜索表单样式 */
-.search-form {
-    background: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-/* 操作栏样式 */
-.action-bar {
+/* 工具栏样式 */
+.toolbar {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     gap: 12px;
-    align-items: center;
-    margin-bottom: 20px;
-    padding: 16px 20px;
+    margin-bottom: 12px;
+    padding: 10px 12px;
     background: #fff;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.action-bar .btn {
+.toolbar .btn {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
-    font-size: 14px;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 12px;
+    font-size: 13px;
     font-weight: 500;
+    white-space: nowrap;
 }
 
 .shortcut-hint {
@@ -45,14 +38,33 @@
     display: flex;
     gap: 8px;
     align-items: center;
-    flex-grow: 1;
+    flex: 1 1 auto;
+    min-width: 260px;
+}
+
+.search-label {
+    color: #555;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
 }
 
 .search-container input {
-    flex-grow: 1;
+    flex: 1 1 auto;
+    min-width: 120px;
     background-color: #f8f9fa;
     color: #333;
     border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 13px;
+}
+
+.toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
 }
 
 
@@ -97,20 +109,30 @@
     min-height: 450px;
     max-height: 500px;
     overflow-y: auto;
+    overflow-x: auto;
 }
 
 .pwds .list .item{
     width: 100%;
-    height: 48px;
-    line-height: 48px;
+    min-height: 48px;
+    line-height: 1.35;
     font-size: 14px;
     background-color: #fff;
     border-bottom: 1px solid #f0f0f0;
     display: grid;
-    grid-template-columns: 50px 1fr 1fr 1fr 240px;
+    grid-template-columns: 50px minmax(120px, 1.1fr) minmax(120px, 1fr) minmax(80px, 0.7fr) minmax(260px, 300px);
+    align-items: center;
+    column-gap: 8px;
     text-align: center;
     transition: background-color 0.2s ease;
-    padding: 0 8px;
+    padding: 8px;
+}
+
+.pwds .list .item > div {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .pwds .list .item:hover:not(.header) {
@@ -126,20 +148,99 @@
 
 .pwds .list .item.selected {
     background-color: rgba(76, 175, 80, 0.1);
-    border-left: 3px solid #4CAF50;
+    box-shadow: inset 3px 0 0 #4CAF50;
+}
+
+.pwds .list .item .name-cell {
+    cursor: default;
+}
+
+.pwds .list .item .name-cell:hover {
+    color: #2f7d32;
 }
 
 .select-col {
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: visible !important;
+}
+
+.pwds .select-col input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 16px !important;
+    height: 16px !important;
+    flex: 0 0 16px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid #cfd6dd;
+    border-radius: 3px;
+    background: #fff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.pwds .select-col input[type="checkbox"]:after {
+    content: "";
+    position: static;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 2px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    visibility: visible;
+}
+
+.pwds .select-col input[type="checkbox"]:checked {
+    border-color: #4CAF50;
+    background: #4CAF50;
+}
+
+.pwds .select-col input[type="checkbox"]:checked:after {
+    content: "\2713";
+    padding: 0;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    background: transparent;
+}
+
+.pwds .select-col input[type="checkbox"]:indeterminate {
+    border-color: #4CAF50;
+    background: #4CAF50;
+}
+
+.pwds .select-col input[type="checkbox"]:indeterminate:after {
+    content: "";
+    width: 8px;
+    height: 2px;
+    border-radius: 1px;
+    background: #fff;
 }
 
 .pwds .list .item .action{
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-end;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
+    overflow: visible;
+}
+
+.pwds .list .item .action .btn {
+    flex: 0 0 auto;
+    padding: 6px 10px;
+    font-size: 12px;
+    line-height: 1.2;
+    white-space: nowrap;
 }
 
 /* 空状态样式 */
@@ -166,24 +267,98 @@
     color: #6c757d;
 }
 
+.note-tooltip {
+    position: fixed;
+    z-index: 10001;
+    max-width: 320px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    background: rgba(33, 37, 41, 0.94);
+    color: #fff;
+    font-size: 12px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+    pointer-events: none;
+}
+
+.dialog-mask {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background: rgba(0, 0, 0, 0.42);
+    backdrop-filter: blur(1px);
+    pointer-events: auto;
+}
+
 
 
 
 
 /* 确认对话框样式 */
+.modal,
+.confirm-dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.modal-content {
+    background: #fff;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 520px;
+    max-height: 85%;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e0e0e0;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e9ecef;
+    background-color: #f8f9fa;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #495057;
+    font-size: 18px;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 16px 20px;
+    border-top: 1px solid #e9ecef;
+    background-color: #f8f9fa;
+}
+
 .confirm-content {
     background: #fff;
     border-radius: 8px;
     width: 90%;
     max-width: 400px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    transform: scale(0.9);
+    transform: scale(1);
     transition: transform 0.3s ease;
     border: 1px solid #e0e0e0;
-}
-
-.confirm-dialog[style*="opacity: 1"] .confirm-content {
-    transform: scale(1);
 }
 
 .confirm-header {
@@ -282,4 +457,59 @@
     box-shadow   : inset 0 0 1px rgba(0, 83, 11, 0.8);
     border-radius: 0 6px 6px 0;
     background   : #0d630d;
+}
+
+@media (max-width: 900px) {
+    .toolbar {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 8px;
+        padding: 8px;
+    }
+
+    .search-container {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .toolbar-actions {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .toolbar-actions .btn {
+        flex: 0 0 auto;
+    }
+
+    .pwds .list .item {
+        grid-template-columns: 40px minmax(0, 1fr) 210px;
+        font-size: 13px;
+        min-height: 44px;
+        line-height: 1.3;
+        padding: 6px;
+        column-gap: 6px;
+    }
+
+    .pwds .list .item > div:nth-child(3),
+    .pwds .list .item > div:nth-child(4) {
+        display: none;
+    }
+
+    .pwds .list .item .action {
+        gap: 4px;
+    }
+
+    .pwds .list .item .action .btn {
+        padding: 5px 7px;
+        font-size: 12px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .pwds .list .item {
+        min-height: 52px;
+        line-height: 1.35;
+        grid-template-columns: 60px minmax(140px, 1.1fr) minmax(140px, 1fr) minmax(100px, 0.7fr) minmax(300px, 340px);
+    }
 }
